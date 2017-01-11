@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Prime Number Checker</title>
+        <style media="screen">
+          body{
+            background-color: #28DE28;
+            margin: 0;
+            padding: 0;
+            transition: background 2s ease;
+            font-family: verdana;
+            color: #fff;
+            font-size: 22px;
+          }
+          #num{
+            width: 96%;
+            border: 0;
+            margin: 0;
+            padding: 2%;
+            outline: 0;
+            font-family: verdana;
+            background: #000;
+            opacity: 0.5;
+            font-size: 100px;
+            color: #fff;
+          }
+          #loading{
+            background-color: #000;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+            color: #fff;
+            font-family: verdana;
+            text-align: center;
+            display: table;
+          }
+          span{
+            display: table-cell;;
+            vertical-align: middle;
+            font-size: 100px;
+          }
+          #isPrime{
+            margin: 10px;
+          }
+          input[type=number]::-webkit-inner-spin-button,
+          input[type=number]::-webkit-outer-spin-button {
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              appearance: none;
+              margin: 0;
+          }
+        </style>
+    </head>
+    <body id="body">
+        <div class="num">
+            <input type="number" name="num" value="" id="num" placeholder="123...">
+        </div>
+        <div id="isPrime">
+          <br>Enter a number above then press return to see if your number is prime!<br>
+          <div id="state"></div>
+        </div>
+        <div id="loading">
+          <span>Loading...</span>
+        </div>
+        <script type="text/javascript" src="jquery-2.2.4.min.js"></script>
+        <script type="text/javascript">
+          highest = "0";
+          $.get("lastNum.php", {val : "1"}).done(function(rtndata){
+            highest = rtndata;
+          });
+          function item(id){
+            return document.getElementById(id);
+          }
+          function data(value, num){
+            item("loading").style.zIndex = "-1";
+            item("loading").style.opacity = "0";
+            setTimeout(function(){}, 500);
+            if(value == "true"){
+              item("body").style.background = "#28DE28";
+              $("#state").html("<br>The Number " + val + " is Prime!<br>")
+            }else{
+              item("body").style.background = "#F5002D";
+              $("#state").html("<br>The Number " + val + " isn't Prime!<br>")
+            }
+          }
+          $('#num').on('keypress', function(e){
+            if(e.keyCode == 13){
+              val = document.getElementById('num').value;
+              if(Number(val) <= Number(highest)){
+                item("loading").style.opacity = "0.75";
+                  item("loading").style.zIndex = "100";
+                $.get("isPrime.php", { num : val }).done(function(rtndata){
+                  data(rtndata, val);
+                });
+              }else if(Number(val) > Number(highest)){
+                alert("Number too large, maximum value " + highest + "!");
+              }else{
+                alert("Number not valid, please enter a valid number!");
+              }
+            }
+          });
+        </script>
+    </body>
+</html>
